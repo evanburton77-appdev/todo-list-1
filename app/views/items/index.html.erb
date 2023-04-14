@@ -1,0 +1,203 @@
+<div>
+  <div>
+    <h1>
+      Your todo list
+    </h1>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <div>
+    <h2>
+      Add a new todo
+    </h2>
+
+    <form action="/insert_item" method="post">
+      <div>
+        <label for="content_box">
+          Describe the task:
+        </label>
+
+        <input type="text" id="content_box" name="query_content">
+      </div>
+
+      <div>
+
+
+        <input value="next_up" type="hidden" id="status_box" name="query_status">
+      </div>
+
+      <div>
+
+        <input type="hidden" value="<%= @current_user.id%>"  id="user_id_box" name="query_user_id">
+      </div>
+
+      <button>
+        Add to Next Up
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="next_up" style="color: darkorange">
+<h2>Next Up</h2>
+<ul>
+
+ <% @list_of_items.where({ :status => "next_up" }).where({ :user_id => @current_user.id }).each do |an_item| %>
+<li>
+<%= an_item.content %>
+<div style="font-size: 10pt">Added about <%= time_ago_in_words(an_item.created_at) %> ago
+ <a href="/delete_item/<%= an_item.id %>">
+          Delete
+        </a></div> 
+<form action="/modify_item/<%= an_item.id %>"  method="post" >
+      
+      <div>
+        <input type="hidden" id="content_box" name="query_content" value="<%= an_item.content %>">
+      </div>
+
+
+      <div>
+        <input type="hidden" id="user_id_box" name="query_user_id" value="<%= an_item.user_id %>">
+      </div>
+      <div>
+        <input type="hidden" value="in_progress" id="status_box" name="query_status">
+      </div>
+
+      <button>
+        Move to In Progress
+      </button>
+      </form>
+</li>
+
+
+<% end %>
+</ul>
+</div>
+
+<div class="in_progress" style="color: darkgreen">
+<h2>In Progress</h2>
+<ul>
+
+ <% @list_of_items.where({ :status => "in_progress" }).where({ :user_id => @current_user.id }).each do |an_item| %>
+<li>
+<%= an_item.content %>
+<div style="font-size: 10pt">Started <%= time_ago_in_words(an_item.updated_at) %> ago
+ <a href="/delete_item/<%= an_item.id %>">
+          Delete
+        </a></div>
+<form action="/modify_item/<%= an_item.id %>"  method="post" >
+           <div>
+        <input type="hidden" id="content_box" name="query_content" value="<%= an_item.content %>">
+      </div>
+
+
+      <div>
+        <input type="hidden" id="user_id_box" name="query_user_id" value="<%= an_item.user_id %>">
+      </div>
+      <div>
+
+        <input type="hidden" value="done" id="status_box" name="query_status">
+      </div>
+
+      <button>
+        Move to Done
+      </button>
+    </form>
+</li>
+<% end %>
+</ul>
+</div>
+
+<div class="done" style="color: grey">
+<h2>Done</h2>
+<ul>
+
+ <% @list_of_items.where({ :status => "done" }).where({ :user_id => @current_user.id }).each do |an_item| %>
+<li>
+<%= an_item.content %>
+<div style="font-size: 10pt">Completed at <%= formatted_time_on_date(an_item.updated_at) %>
+ <a href="/delete_item/<%= an_item.id %>">
+          Delete
+        </a></div>
+</li>
+
+
+<% end %>
+</ul>
+</div>
+
+
+
+<hr>
+<div>
+  <div>
+    <table border="1">
+      <tr>
+        <th>
+          ID
+        </th>
+
+        <th>
+          Content
+        </th>
+
+        <th>
+          Status
+        </th>
+
+        <th>
+          User
+        </th>
+
+        <th>
+          Created at
+        </th>
+
+        <th>
+          Updated at
+        </th>
+
+        <th>
+        </th>
+      </tr>
+
+      <% @list_of_items.each do |an_item| %>
+      <tr>
+        <td>
+          <%= an_item.id %>
+        </td>
+
+        <td>
+          <%= an_item.content %>
+        </td>
+
+        <td>
+          <%= an_item.status %>
+        </td>
+
+        <td>
+          <%= an_item.user_id %>
+        </td>
+
+        <td>
+          <%= time_ago_in_words(an_item.created_at) %> ago
+        </td>
+        <td>
+          <%= time_ago_in_words(an_item.updated_at) %> ago
+        </td>
+
+        <td>
+          <a href="/items/<%= an_item.id %>">
+            Show details
+          </a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<hr>
